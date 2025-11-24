@@ -14805,11 +14805,18 @@
 	
 		// html
 		"html-pre": function ( a ) {
-			return _empty(a) ?
-				'' :
-				a.replace ?
-					a.replace( /<.*?>/g, "" ).toLowerCase() :
-					a+'';
+			if (_empty(a)) {
+				return '';
+			}
+			if (a.replace) {
+				let prev, cur = a;
+				do {
+					prev = cur;
+					cur = cur.replace(/<.*?>/g, "");
+				} while (cur !== prev);
+				return cur.toLowerCase();
+			}
+			return a + '';
 		},
 	
 		// string
