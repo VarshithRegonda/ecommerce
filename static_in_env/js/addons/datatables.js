@@ -14713,9 +14713,15 @@
 			return _empty(data) ?
 				data :
 				typeof data === 'string' ?
-					data
-						.replace( _re_new_lines, " " )
-						.replace( _re_html, "" ) :
+					(function(val){
+						val = val.replace( _re_new_lines, " " );
+						var prev;
+						do {
+							prev = val;
+							val = val.replace(_re_html, "");
+						} while (val !== prev);
+						return val;
+					})(data) :
 					'';
 		},
 	
