@@ -9,8 +9,12 @@ class ContactForm(forms.Form):
                               )
     def clean_code(self):
         email = self.cleaned_data.get("email")
-        if not "gmail.com" in email:
-            raise forms.ValidationError("Email hs to be gmail.com")
+        try:
+            domain = email.split('@')[1].strip().lower()
+        except (IndexError, AttributeError):
+            raise forms.ValidationError("Invalid email address format")
+        if domain != "gmail.com":
+            raise forms.ValidationError("Email has to be gmail.com")
         return email
 
 class LoginForm(forms.Form):
