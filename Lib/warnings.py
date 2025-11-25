@@ -1,7 +1,7 @@
 """Python part of the warnings subsystem."""
 
 import sys
-
+import re
 
 __all__ = ["warn", "warn_explicit", "showwarning",
            "formatwarning", "filterwarnings", "simplefilter",
@@ -16,6 +16,14 @@ def formatwarning(message, category, filename, lineno, line=None):
     """Function to format a warning the standard way."""
     msg = WarningMessage(message, category, filename, lineno, None, line)
     return _formatwarnmsg_impl(msg)
+def sanitize_warning_text(text):
+    # Redact password=... (case-insensitive), password: ..., or Authorization headers
+    text = re.sub(r'(?i)(password\s*[=:]\s*)([^\s,;\'"]+)', r'\1<redacted>', text)
+    # Redact Authorization: Basic ... credentials (typical pattern)
+    text = re.sub(r'(Authorization:\s*Basic\s+)([A-Za-z0-9+/=]+)', r'\1<redacted>', text, flags=re.IGNORECASE)
+    # If other secrets/credentials patterns are needed, add here
+    return text
+
 
 def _showwarnmsg_impl(msg):
     file = msg.file
@@ -25,6 +33,7 @@ def _showwarnmsg_impl(msg):
             # sys.stderr is None when run with pythonw.exe:
             # warnings get lost
             return
+    text = sanitize_warning_text(text)
     text = _formatwarnmsg(msg)
     try:
         file.write(text)
