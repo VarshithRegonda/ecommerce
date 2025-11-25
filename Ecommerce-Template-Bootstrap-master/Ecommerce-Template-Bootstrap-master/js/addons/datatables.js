@@ -14723,9 +14723,17 @@
 			return _empty(data) ?
 				data :
 				typeof data === 'string' ?
-					data
-						.replace( _re_new_lines, " " )
-						.replace( _re_html, "" ) :
+					(function stripAllTags(str) {
+						if (typeof str !== "string") return str;
+						str = str.replace(_re_new_lines, " ");
+						let old;
+						do {
+							old = str;
+							str = str.replace(_re_html, "");
+						} while (str !== old);
+						return str;
+					})(data)
+					:
 					'';
 		},
 	
