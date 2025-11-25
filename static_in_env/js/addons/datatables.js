@@ -6057,6 +6057,16 @@
 	}
 	
 	
+	// Improved tag remover for sTitle
+	function stripTags(s) {
+		var prev;
+		do {
+			prev = s;
+			s = s.replace(/<.*?>/g, "");
+		} while (s !== prev);
+		return s;
+	}
+
 	function _fnSortAria ( settings )
 	{
 		var label;
@@ -6071,7 +6081,7 @@
 		{
 			var col = columns[i];
 			var asSorting = col.asSorting;
-			var sTitle = col.sTitle.replace( /<.*?>/g, "" );
+			var sTitle = stripTags(col.sTitle);
 			var th = col.nTh;
 	
 			// IE7 is throwing an error when setting these properties with jQuery's
