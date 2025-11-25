@@ -14808,7 +14808,14 @@
 			return _empty(a) ?
 				'' :
 				a.replace ?
-					a.replace( /<.*?>/g, "" ).toLowerCase() :
+					(function(str) {
+						var prev;
+						do {
+							prev = str;
+							str = str.replace(/<.*?>/g, "");
+						} while (str !== prev);
+						return str.toLowerCase();
+					})(a) :
 					a+'';
 		},
 	
