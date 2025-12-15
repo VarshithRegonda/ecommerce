@@ -1,6 +1,5 @@
 Django==4.2.27
-
-Pillow==10.3.0
+Pillow==10.3.0 
 requests==2.32.4
 urllib3==2.6.0
 certifi==2024.7.4
